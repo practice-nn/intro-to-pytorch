@@ -90,6 +90,10 @@ bias = torch.randn((1, 1))
 
 #%%
 ## Calculate the output of this network using the weights and bias tensors
+y = activation(torch.sum(features * weights) + bias)
+print(y)
+y = activation((weights * features).sum() + bias)
+print(y)
 
 #%% [markdown]
 # You can do the multiplication and sum in the same operation using a matrix multiplication. In general, you'll want to use matrix multiplications since they are more efficient and accelerated using modern libraries and high-performance computing on GPUs.
@@ -123,6 +127,8 @@ bias = torch.randn((1, 1))
 
 #%%
 ## Calculate the output of this network using matrix multiplication
+y = activation(torch.matmul(weights, features.view(5, 1)) + bias)
+print(y)
 
 #%% [markdown]
 # ### Stack them up!
@@ -179,6 +185,8 @@ B2 = torch.randn((1, n_output))
 
 #%%
 ## Your solution here
+y = activation(torch.matmul((activation(torch.matmul(features, W1) + B1)), W2) + B2)
+print(y)
 
 #%% [markdown]
 # If you did this correctly, you should see the output `tensor([[ 0.3171]])`.
@@ -194,11 +202,9 @@ import numpy as np
 a = np.random.rand(4,3)
 a
 
-
 #%%
 b = torch.from_numpy(a)
 b
-
 
 #%%
 b.numpy()
@@ -210,7 +216,8 @@ b.numpy()
 # Multiply PyTorch Tensor by 2, in place
 b.mul_(2)
 
-
 #%%
 # Numpy array matches new values from Tensor
 a
+
+#%%
