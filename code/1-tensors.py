@@ -1,3 +1,5 @@
+"""Intro to Pytorch Tensors"""
+
 #%% [markdown]
 # # Introduction to Deep Learning with PyTorch
 #
@@ -43,16 +45,10 @@
 #
 # With the basics covered, it's time to explore how we can use PyTorch to build a simple neural network.
 
-#%% Activate virtualenv, vscode bug: https://github.com/Microsoft/vscode-python/issues/3537#issuecomment-452039523
-virtualenv_path = "./env"
-exec(
-    open("%s/Scripts/activate_this.py" % virtualenv_path).read(),
-    dict(__file__="%s/Scripts/activate_this.py" % virtualenv_path)
-)
-
 #%%
 # First, import PyTorch
 import torch
+import numpy as np
 
 #%%
 def activation(x):
@@ -198,13 +194,12 @@ print(y)
 # Special bonus section! PyTorch has a great feature for converting between Numpy arrays and Torch tensors. To create a tensor from a Numpy array, use `torch.from_numpy()`. To convert a tensor to a Numpy array, use the `.numpy()` method.
 
 #%%
-import numpy as np
-a = np.random.rand(4,3)
-a
+a = np.random.rand(4, 3)
+print(a)
 
 #%%
 b = torch.from_numpy(a)
-b
+print(b)
 
 #%%
 b.numpy()
@@ -218,6 +213,14 @@ b.mul_(2)
 
 #%%
 # Numpy array matches new values from Tensor
-a
+print(a)
+
+def main():
+    """main module"""
+    print('my module')
+
+if __name__ == '__main__':
+    main()
+
 
 #%%
