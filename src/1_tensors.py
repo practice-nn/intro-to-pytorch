@@ -45,6 +45,13 @@
 #
 # With the basics covered, it's time to explore how we can use PyTorch to build a simple neural network.
 
+#%% Activate virtualenv, vscode bug: https://github.com/Microsoft/vscode-python/issues/3537#issuecomment-452039523
+import os
+exec(
+    open("./src/helpers/activate_this.py").read(),
+    dict(bin_dir=os.path.abspath("./.env/"))
+)
+
 #%%
 # First, import PyTorch
 import torch
@@ -59,7 +66,6 @@ def activation(x):
         x: torch.Tensor
     """
     return 1/(1+torch.exp(-x))
-
 
 #%%
 ### Generate some data
