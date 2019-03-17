@@ -1,5 +1,9 @@
 # don't include datasets
 datasets/
+data/
+
+# don't include jupyter notebooks
+*.ipynb
 
 # vs code
 .vscode/*

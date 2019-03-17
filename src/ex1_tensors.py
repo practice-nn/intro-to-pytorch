@@ -65,7 +65,7 @@ def activation(x):
         ---------
         x: torch.Tensor
     """
-    return 1/(1+torch.exp(-x))
+    return 1 / (1 + torch.exp(-x))
 
 #%%
 ### Generate some data
@@ -221,12 +221,10 @@ b.mul_(2)
 # Numpy array matches new values from Tensor
 print(a)
 
+#%%
 def main():
     """main module"""
     print('my module')
 
 if __name__ == '__main__':
     main()
-
-
-#%%
