@@ -19,7 +19,10 @@ get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
 import numpy as np
 import torch
 
-from src.helpers import imshow, test_network, view_recon, view_classify
+from src.helpers.imshow import imshow
+from src.helpers.test_network import test_network
+from src.helpers.view_recon import view_recon
+from src.helpers.view_classify import view_classify
 
 import matplotlib.pyplot as plt
 
@@ -117,12 +120,11 @@ print(out.shape)
 #%%
 def softmax(x):
     ## TODO: Implement the softmax function here
-    return torch.exp(x)/torch.exp(x).sum(dim=1)
+    return torch.exp(x)/torch.exp(x).sum(dim=1).view(-1, 1)
 
 # Here, out should be the output of the network in the previous excercise with shape (64,10)
-print(out.sum(dim=0))
 probabilities = softmax(out)
-#%%
+
 # Does it have the right shape? Should be (64, 10)
 print(probabilities)
 # Does it sum to 1?
@@ -250,6 +252,28 @@ class Network(nn.Module):
 
 #%%
 ## Your solution here
+import torch.nn.functional as F
+
+class Network(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # Inputs to hidden layer linear transformation
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 64)
+        # Output layer, 10 units - one for each digit
+        self.fc3 = nn.Linear(64, 10)
+
+    def forward(self, x):
+        # Hidden layer with relu activation
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        # Output layer with softmax activation
+        x = F.softmax(self.fc3(x), dim=1)
+
+        return x
+
+model = Network()
+model
 
 #%% [markdown]
 # ### Initializing weights and biases
@@ -266,7 +290,6 @@ print(model.fc1.bias)
 #%%
 # Set biases to all zeros
 model.fc1.bias.data.fill_(0)
-
 
 #%%
 # sample from random normal with standard dev = 0.01
@@ -288,10 +311,10 @@ images.resize_(64, 1, 784)
 
 # Forward pass through the network
 img_idx = 0
-ps = model.forward(images[img_idx,:])
+ps = model.forward(images[img_idx, :])
 
 img = images[img_idx]
-helper.view_classify(img.view(1, 28, 28), ps)
+view_classify(img.view(1, 28, 28), ps)
 
 #%% [markdown]
 # As you can see above, our network has basically no idea what this digit is. It's because we haven't trained it yet, all the weights are random!
@@ -318,8 +341,8 @@ print(model)
 # Forward pass through the network and display output
 images, labels = next(iter(trainloader))
 images.resize_(images.shape[0], 1, 784)
-ps = model.forward(images[0,:])
-helper.view_classify(images[0].view(1, 28, 28), ps)
+ps = model.forward(images[0, :])
+view_classify(images[0].view(1, 28, 28), ps)
 
 #%% [markdown]
 # Here our model is the same as before: 784 input units, a hidden layer with 128 units, ReLU activation, 64 unit hidden layer, another ReLU, then the output layer with 10 units, and the softmax output.
@@ -336,12 +359,12 @@ model[0].weight
 #%%
 from collections import OrderedDict
 model = nn.Sequential(OrderedDict([
-                      ('fc1', nn.Linear(input_size, hidden_sizes[0])),
-                      ('relu1', nn.ReLU()),
-                      ('fc2', nn.Linear(hidden_sizes[0], hidden_sizes[1])),
-                      ('relu2', nn.ReLU()),
-                      ('output', nn.Linear(hidden_sizes[1], output_size)),
-                      ('softmax', nn.Softmax(dim=1))]))
+    ('fc1', nn.Linear(input_size, hidden_sizes[0])),
+    ('relu1', nn.ReLU()),
+    ('fc2', nn.Linear(hidden_sizes[0], hidden_sizes[1])),
+    ('relu2', nn.ReLU()),
+    ('output', nn.Linear(hidden_sizes[1], output_size)),
+    ('softmax', nn.Softmax(dim=1))]))
 model
 
 #%% [markdown]
