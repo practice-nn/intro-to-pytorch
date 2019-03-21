@@ -18,6 +18,9 @@ get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
 
 import numpy as np
 import torch
+from torch import nn
+import torch.nn.functional as F
+from torchvision import datasets, transforms
 
 from src.helpers.imshow import imshow
 from src.helpers.test_network import test_network
@@ -25,6 +28,8 @@ from src.helpers.view_recon import view_recon
 from src.helpers.view_classify import view_classify
 
 import matplotlib.pyplot as plt
+
+from collections import OrderedDict
 
 #%% [markdown]
 #
@@ -38,9 +43,6 @@ import matplotlib.pyplot as plt
 
 #%%
 ### Run this cell
-
-from torchvision import datasets, transforms
-
 # Define a transform to normalize the data
 transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5,), (0.5,)),
@@ -120,7 +122,7 @@ print(out.shape)
 #%%
 def softmax(x):
     ## TODO: Implement the softmax function here
-    return torch.exp(x)/torch.exp(x).sum(dim=1).view(-1, 1)
+    return torch.exp(x) / torch.exp(x).sum(dim=1).view(-1, 1)
 
 # Here, out should be the output of the network in the previous excercise with shape (64,10)
 probabilities = softmax(out)
@@ -134,9 +136,6 @@ print(probabilities.sum(dim=1))
 # ## Building networks with PyTorch
 #
 # PyTorch provides a module `nn` that makes building networks much simpler. Here I'll show you how to build the same one as above with 784 inputs, 256 hidden units, 10 output units and a softmax output.
-
-#%%
-from torch import nn
 
 #%%
 class Network(nn.Module):
@@ -215,8 +214,6 @@ model
 # You can define the network somewhat more concisely and clearly using the `torch.nn.functional` module. This is the most common way you'll see networks defined as many operations are simple element-wise functions. We normally import this module as `F`, `import torch.nn.functional as F`.
 
 #%%
-import torch.nn.functional as F
-
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
@@ -252,8 +249,6 @@ class Network(nn.Module):
 
 #%%
 ## Your solution here
-import torch.nn.functional as F
-
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
@@ -357,14 +352,14 @@ model[0].weight
 # You can also pass in an `OrderedDict` to name the individual layers and operations, instead of using incremental integers. Note that dictionary keys must be unique, so _each operation must have a different name_.
 
 #%%
-from collections import OrderedDict
 model = nn.Sequential(OrderedDict([
     ('fc1', nn.Linear(input_size, hidden_sizes[0])),
     ('relu1', nn.ReLU()),
     ('fc2', nn.Linear(hidden_sizes[0], hidden_sizes[1])),
     ('relu2', nn.ReLU()),
     ('output', nn.Linear(hidden_sizes[1], output_size)),
-    ('softmax', nn.Softmax(dim=1))]))
+    ('softmax', nn.Softmax(dim=1))
+    ]))
 model
 
 #%% [markdown]
